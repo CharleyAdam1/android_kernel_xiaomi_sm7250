@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<manifest>
+    <!-- 定义远程仓库配置 -->
+    <remote name="github"
+            fetch="https://github.com/"
+            review="review.lineageos.org" />
+    
+    <!-- 定义默认同步设置 -->
+    <default revision="refs/heads/lineage-18.1"
+             remote="github"
+             sync-j="4"
+             sync-c="true"
+             sync-tags="false" />
+    
+    <!-- 项目定义 -->
+    <project name="CharleyAdam1/android_kernel_xiaomi_sm7250"
+             path="kernel/xiaomi/sm7250"
+             groups="kernel" />
+</manifest>
