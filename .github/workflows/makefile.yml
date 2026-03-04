@@ -8,6 +8,10 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - name: Fix python2 script
+        run: |
+          sed -i 's/print "error, forbidden warning:", m.group(2)/print("error, forbidden warning:", m.group(2))/g' kernel/scripts/gcc-wrapper.py
+
       - name: Install dependencies
         run: |
           sudo apt update
