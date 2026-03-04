@@ -6,6 +6,7 @@ on:
 jobs:
   Build-Kernel:
     runs-on: ubuntu-latest
+    timeout-minutes: 120
 
     steps:
       - uses: actions/checkout@v4
@@ -44,7 +45,7 @@ jobs:
             CROSS_COMPILE_ARM32=arm-linux-gnueabi- \
             vendor/vangogh_user_defconfig
 
-          make -j1 O=out ARCH=arm64 \
+          make -j$(nproc) O=out ARCH=arm64 \
             CC=clang \
             CLANG_TRIPLE=aarch64-linux-gnu- \
             CROSS_COMPILE=aarch64-linux-gnu- \
