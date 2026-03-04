@@ -22,8 +22,8 @@ jobs:
 
       - name: Fix python2 gcc-wrapper (msm-4.19 compatibility)
         run: |
-          if [ -f kernel/msm-4.19/scripts/gcc-wrapper.py ]; then
-            sed -i 's/print "error, forbidden warning:", m.group(2)/print("error, forbidden warning:", m.group(2))/g' kernel/msm-4.19/scripts/gcc-wrapper.py
+          if [ -f kernel/scripts/gcc-wrapper.py ]; then
+            sed -i 's/print "error, forbidden warning:", m.group(2)/print("error, forbidden warning:", m.group(2))/g' kernel/scripts/gcc-wrapper.py
           fi
 
       - name: Setup Clang (Android r383902)
@@ -34,7 +34,7 @@ jobs:
 
       - name: Build Kernel
         run: |
-          cd kernel/msm-4.19
+          cd kernel
           mkdir -p out
           make O=out ARCH=arm64 vendor/vangogh_user_defconfig
           make -j1 O=out ARCH=arm64
@@ -43,4 +43,4 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: Image
-          path: kernel/msm-4.19/out/arch/arm64/boot/Image*
+          path: kernel/out/arch/arm64/boot/Image*
