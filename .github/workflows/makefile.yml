@@ -1,28 +1,31 @@
-# A simple action usage
 name: Build Kernel
+
 on:
   workflow_dispatch:
 
 jobs:
   Build-Kernel:
-    strategy:
-      fail-fast: false
     runs-on: ubuntu-latest
-    permissions:
-      contents: read
 
     steps:
-      - name: Build Kernel
-        uses: dabao1955/kernel_build_action@main
-        with:
-          kernel-url: https://github.com/CharleyAdam1/android_kernel_xiaomi_sm7250
-          kernel-dir: msm-4.19
-          kernel-branch: lineage-19.1
-          config: vendor/vangogh_user_defconfig
-          arch: arm64
-          aosp-gcc: true
-          aosp-clang: true
-          android-version: 12
-          aosp-clang-version: r383902
-          disable-lto: true
-          anykernel3: true
+      - name: Install dependencies
+        run: |
+          sudo apt update
+          sudo apt install -y bc bison build-essential curl flex git libssl-dev libncurses5-dev lzop repo unzip zip python3
+
+      - name: Clone Kernel Source
+        run: |
+          git clone --depth=1 https://github.com/CharleyAdam1/android_kernel_xiaomi_sm7250 -b lineage-19.1 kernel
+          
+      - name: Setup Clang
+        run: |
+          git clone --depth=1 https://android.googlesource.com/platform/prebuilts/clang/host/linux-x86 clang
+          export PATH=$PWD/clang/clang-r383902/bin:$PATH
+          echo "PATH=$PWD/clang/clang-r383902/bin:$PATH" >> $GITHUB_ENV
+
+      - name: Build Kernel (Single Thread Debug Mode)
+        run: |
+          cd kernel/msm-4.19
+          mkdir out
+          make O=out ARCH=arm64 vendor/vangogh_user_defconfig
+          make -j1 O=out ARCH=arm64 V=1
