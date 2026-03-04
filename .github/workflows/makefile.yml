@@ -15,14 +15,17 @@ jobs:
           sudo apt update
           sudo apt install -y \
             bc bison build-essential curl flex git \
-            libssl-dev libncurses-dev lzop unzip zip \
-            python-is-python3
+            libssl-dev libncurses-dev lzop unzip zip
 
-      - name: Disable gcc wrapper (python2 issue fix)
+      - name: Replace gcc-wrapper (fix python2 issue)
         run: |
-          if [ -f scripts/gcc-wrapper.py ]; then
-            mv scripts/gcc-wrapper.py scripts/gcc-wrapper.py.bak
-          fi
+          printf '%s\n' \
+          '#!/usr/bin/env python3' \
+          'import os' \
+          'import sys' \
+          'os.execvp(sys.argv[1], sys.argv[1:])' \
+          > scripts/gcc-wrapper.py
+          chmod +x scripts/gcc-wrapper.py
 
       - name: Setup Clang r383902
         run: |
