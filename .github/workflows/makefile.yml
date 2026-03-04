@@ -17,24 +17,22 @@ jobs:
           sudo apt install -y \
             bc bison build-essential curl flex git \
             libssl-dev libncurses5-dev libncurses-dev \
-            lzop repo unzip zip \
+            lzop unzip zip \
             python-is-python3
 
-      - name: Fix python2 gcc-wrapper (msm-4.19 compatibility)
+      - name: Fix python2 gcc-wrapper (msm-4.19)
         run: |
-          if [ -f kernel/scripts/gcc-wrapper.py ]; then
-            sed -i 's/print "error, forbidden warning:", m.group(2)/print("error, forbidden warning:", m.group(2))/g' kernel/scripts/gcc-wrapper.py
+          if [ -f scripts/gcc-wrapper.py ]; then
+            sed -i 's/print "error, forbidden warning:", m.group(2)/print("error, forbidden warning:", m.group(2))/g' scripts/gcc-wrapper.py
           fi
 
-      - name: Setup Clang (Android r383902)
+      - name: Setup Clang r383902
         run: |
           git clone --depth=1 https://android.googlesource.com/platform/prebuilts/clang/host/linux-x86 clang
-          export PATH=$PWD/clang/clang-r383902/bin:$PATH
-          echo "PATH=$PWD/clang/clang-r383902/bin:$PATH" >> $GITHUB_ENV
+          echo "$PWD/clang/clang-r383902/bin" >> $GITHUB_PATH
 
       - name: Build Kernel
         run: |
-          cd kernel
           mkdir -p out
           make O=out ARCH=arm64 vendor/vangogh_user_defconfig
           make -j1 O=out ARCH=arm64
@@ -43,4 +41,4 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: Image
-          path: kernel/out/arch/arm64/boot/Image*
+          path: out/arch/arm64/boot/Image*
