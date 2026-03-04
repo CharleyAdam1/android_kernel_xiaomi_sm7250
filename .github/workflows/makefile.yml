@@ -11,7 +11,8 @@ jobs:
       - name: Install dependencies
         run: |
           sudo apt update
-          sudo apt install -y bc bison build-essential curl flex git libssl-dev libncurses5-dev lzop repo unzip zip python3
+          sudo apt install -y bc bison build-essential curl flex git libssl-dev libncurses5-dev lzop repo unzip zip python2
+          sudo ln -sf /usr/bin/python2 /usr/bin/python
 
       - name: Clone Kernel Source
         run: |
