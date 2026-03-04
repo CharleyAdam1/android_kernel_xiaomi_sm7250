@@ -8,22 +8,20 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout Kernel Source
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
       - name: Install Dependencies
         run: |
           sudo apt update
           sudo apt install -y \
             bc bison build-essential curl flex git \
-            libssl-dev libncurses5-dev libncurses-dev \
-            lzop unzip zip \
+            libssl-dev libncurses-dev lzop unzip zip \
             python-is-python3
 
-      - name: Fix python2 gcc-wrapper (msm-4.19)
+      - name: Disable gcc wrapper (python2 issue fix)
         run: |
           if [ -f scripts/gcc-wrapper.py ]; then
-            sed -i 's/print "error, forbidden warning:", m.group(2)/print("error, forbidden warning:", m.group(2))/g' scripts/gcc-wrapper.py
+            mv scripts/gcc-wrapper.py scripts/gcc-wrapper.py.bak
           fi
 
       - name: Setup Clang r383902
@@ -37,8 +35,7 @@ jobs:
           make O=out ARCH=arm64 vendor/vangogh_user_defconfig
           make -j1 O=out ARCH=arm64
 
-      - name: Upload Image
-        uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v4
         with:
           name: Image
           path: out/arch/arm64/boot/Image*
