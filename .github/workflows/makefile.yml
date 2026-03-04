@@ -15,7 +15,9 @@ jobs:
           sudo apt update
           sudo apt install -y \
             bc bison build-essential curl flex git \
-            libssl-dev libncurses-dev lzop unzip zip
+            libssl-dev libncurses-dev lzop unzip zip \
+            gcc-aarch64-linux-gnu \
+            gcc-arm-linux-gnueabi
 
       - name: Replace gcc-wrapper (fix python2 issue)
         run: |
@@ -36,7 +38,10 @@ jobs:
         run: |
           mkdir -p out
           make O=out ARCH=arm64 vendor/vangogh_user_defconfig
-          make -j1 O=out ARCH=arm64
+          make -j1 O=out ARCH=arm64 \
+            CC=clang \
+            CROSS_COMPILE=aarch64-linux-gnu- \
+            CROSS_COMPILE_ARM32=arm-linux-gnueabi-
 
       - uses: actions/upload-artifact@v4
         with:
